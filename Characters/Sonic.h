@@ -117,7 +117,7 @@ enum SonicAnimations : Uint16 {
 	Anm_Sonic_Push,
 	Anm_Sonic_Damage,
 	Anm_Sonic_DamageRecover,
-	Anm_Sonic_Brake,
+	Anm_Sonic_Brake2,
 	Anm_Sonic_Updraft,
 	Anm_Sonic_HitWall,
 	Anm_Sonic_HitWallRecover,
