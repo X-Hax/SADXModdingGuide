@@ -1,3 +1,6 @@
+#include "pch.h" // or stdafx.h
+#include "SADXModLoader.h"
+
 uint16_t Sonic_UpperArmIndices[] = {
 	0, 2,
 	1, 3,
@@ -45,7 +48,8 @@ uint16_t Sonic_HandIndices[] = {
 	0, 14
 };
 
-void SetSonicWeldInfo(int id, int base, int modelA, int modelB, uint16_t* indices, size_t count) {
+void SetSonicWeldInfo(int id, int base, int modelA, int modelB, uint16_t* indices, size_t count)
+{
 	SonicWeldInfo[id].BaseModel = SONIC_OBJECTS[base];
 	SonicWeldInfo[id].ModelA = SONIC_OBJECTS[modelA];
 	SonicWeldInfo[id].ModelB = SONIC_OBJECTS[modelB];
@@ -56,11 +60,8 @@ void SetSonicWeldInfo(int id, int base, int modelA, int modelB, uint16_t* indice
 	SonicWeldInfo[id].VertexBuffer = 0;
 }
 
-void InitSonicWeldInfo_r();
-Trampoline InitSonicWeldInfo_t((int)InitSonicWeldInfo, (int)InitSonicWeldInfo + 0x5, InitShadowWeldInfo);
-void InitSonicWeldInfo_r() {
-	((decltype(InitSonicWeldInfo_r)*)InitSonicWeldInfo_t.Target())(); // call original function
-
+void __cdecl InitSonicWeldInfo_r()
+{
 	// SONIC (base model is 0)
 	SetSonicWeldInfo(0, 0, 1, 2, arrayptrandlength(Sonic_UpperArmIndices)); // this connect the vertices of model 1 with model 2
 	SetSonicWeldInfo(1, 0, 2, 3, arrayptrandlength(Sonic_LowerArmIndices)); // model 2 with model 3
@@ -93,4 +94,12 @@ void InitSonicWeldInfo_r() {
 	SetSonicWeldInfo(33, 22, 26, 27, arrayptrandlength(Sonic_HandIndices));
 	SetSonicWeldInfo(34, 22, 31, 32, arrayptrandlength(Sonic_HandIndices));
 	SetSonicWeldInfo(35, 22, 26, 27, arrayptrandlength(Sonic_HandIndices));
+}
+
+extern "C"
+{
+	__declspec(dllexport) void __cdecl Init(const char *path, const HelperFunctions &helperFunctions)
+	{
+		WriteJump(InitSonicWeldInfo, InitSonicWeldInfo_r);
+	}
 }
